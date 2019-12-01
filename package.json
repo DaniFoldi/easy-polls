@@ -1,0 +1,27 @@
+{
+  "name": "easy-polls",
+  "version": "1.0.0",
+  "description": "An all-in-one response-gathering service",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "DaniFoldi",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.4",
+    "debug": "^4.1.1",
+    "express": "^4.17.1",
+    "json5": "^2.1.1",
+    "socket.io": "^2.3.0"
+  },
+  "devDependencies": {
+    "mocha": "^6.2.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/DaniFoldi/easy-polls.git"
+  }
+}
