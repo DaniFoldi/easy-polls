@@ -108,7 +108,7 @@ app.post('/answer', (req, res, next) => {
 })
 
 app.get('/poll/:id', (req, res, next) => {
-  if (req.cookies[req.params.id] || typeof req.query.result !== 'undegined') {
+  if (req.cookies[req.params.id] || typeof req.query.result !== 'undefined') {
     res.sendFile(path.join(__dirname, 'views', 'statistics.html'))
   } else {
     res.sendFile(path.join(__dirname, 'views', 'answer.html'))
