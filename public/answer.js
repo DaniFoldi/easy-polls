@@ -36,6 +36,6 @@ addEventListener('load', async () => {
     })
   })
   document.querySelector('#show-results').addEventListener('click', async () => {
-    window.location = window.location + '?results'
+    window.location = window.location.href + '?results'
   })
 })
