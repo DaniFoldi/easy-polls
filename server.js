@@ -81,7 +81,7 @@ app.post('/poll', (req, res, next) => {
     options: options,
     answers: zeroArray(options.length)
   })
-  res.cookie(req.body.id, 1, {
+  res.cookie(id, 1, {
     maxAge: 315576000000
   }).json({
     url: id
