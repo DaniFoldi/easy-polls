@@ -20,7 +20,7 @@ addEventListener('load', async () => {
     } else {
       const element = document.querySelector('input[type="submit"]')
       element.type = 'text'
-      element.value = location.protocol + '/' + location.host + '/poll/' + body.url
+      element.value = location.protocol + '//' + location.host + '/poll/' + body.url
       element.select()
       element.setSelectionRange(0, 99999)
       console.log(document.execCommand('copy'))
