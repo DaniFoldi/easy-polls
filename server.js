@@ -41,7 +41,7 @@ app.use((req, res, next) => {
 })
 app.use(express.static('public'))
 
-function generateId() {
+async function generateId() {
   const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
   let id = ''
   for (let i = 0; i < 10; i++)
@@ -51,14 +51,14 @@ function generateId() {
   return id
 }
 
-function zeroArray(length) {
+async function zeroArray(length) {
   const a = []
   for (let i = 0; i < length; i++)
     a.push(0)
   return a
 }
 debug('Setting up socket.io connections')
-socket.on('connection', socket => {
+socket.on('connection', async socket => {
   socket.on('selectpoll', data => socket.join(data.id))
 })
 
@@ -67,19 +67,19 @@ app.get('/', (req, res, next) => {
   res.sendFile(path.join(__dirname, 'views', 'create.html'))
 })
 
-app.post('/poll', (req, res, next) => {
+app.post('/poll', async (req, res, next) => {
   debug('Registering new poll data', req.body)
   const options = req.body.options.filter(el => el !== '')
   if (options.length === 0 || req.body.question.length === 0)
     return res.json({
       error: true
     })
-  const id = generateId()
+  const id = await generateId()
   polls.push({
     id: id,
     question: req.body.question,
     options: options,
-    answers: zeroArray(options.length)
+    answers: await zeroArray(options.length)
   })
   res.cookie(id, 1, {
     maxAge: 315576000000
@@ -89,7 +89,7 @@ app.post('/poll', (req, res, next) => {
   debug('Registered new poll', polls[polls.length - 1])
 })
 
-app.post('/answer', (req, res, next) => {
+app.post('/answer', async (req, res, next) => {
   if (req.cookies[req.body.id] === 1 || req.cookies[req.body.id] === 0)
     return res.json({
       error: true
@@ -107,7 +107,7 @@ app.post('/answer', (req, res, next) => {
   socket.in(req.body.id).emit('poll', poll)
 })
 
-app.get('/poll/:id', (req, res, next) => {
+app.get('/poll/:id', async (req, res, next) => {
   if (req.cookies[req.params.id] || typeof req.query.results !== 'undefined') {
     res.sendFile(path.join(__dirname, 'views', 'statistics.html'))
   } else {
@@ -115,7 +115,7 @@ app.get('/poll/:id', (req, res, next) => {
   }
 })
 
-app.post('/poll/:id/details', (req, res, next) => {
+app.post('/poll/:id/details', async (req, res, next) => {
   const poll = polls.find(el => el.id === req.params.id)
   if (typeof poll === 'undefined')
     return res.json({
@@ -125,15 +125,15 @@ app.post('/poll/:id/details', (req, res, next) => {
   res.json(poll)
 })
 
-server.listen(port, () => {
+server.listen(port, async () => {
   debug(`Listening on port ${port}`)
   console.log(`Listening on port ${port}`)
 })
 
 let saved = false
 debug('Setting up exit triggers');
-[`exit`, `SIGINT`, `SIGUSR1`, `SIGUSR2`, `SIGTERM`].forEach(event => {
-  process.on(event, () => {
+[`exit`, `SIGINT`, `SIGUSR1`, `SIGUSR2`, `SIGTERM`].forEach(async event => {
+  process.on(event, async () => {
     if (saved)
       return
     saved = true

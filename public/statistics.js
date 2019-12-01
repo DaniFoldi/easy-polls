@@ -80,7 +80,7 @@ addEventListener('load', async () => {
   }
   chart.update()
 
-  socket.on('poll', data => {
+  socket.on('poll', async data => {
     chart.titleBlock.options.text = data.question
     chart.config.data.labels = data.options
     chart.config.data.datasets[0] = {

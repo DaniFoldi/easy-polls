@@ -1,5 +1,5 @@
 addEventListener('load', async () => {
-  document.querySelector('form').addEventListener('submit', event => {
+  document.querySelector('form').addEventListener('submit', async event => {
     event.preventDefault()
   })
   document.querySelector('input[type=submit]').addEventListener('click', async event => {

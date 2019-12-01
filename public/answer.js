@@ -19,18 +19,23 @@ addEventListener('load', async () => {
     answerNode.insertAdjacentElement('afterend', option)
     answerNode = option
   }
-  document.querySelectorAll('.answer').forEach((el, i) => el.addEventListener('click', async () => {
-    const response = await fetch('/answer', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        id,
-        answer: i
+  document.querySelectorAll('.answer').forEach(async (el, i) => {
+    el.addEventListener('click', async () => {
+      const response = await fetch('/answer', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          id,
+          answer: i
+        })
       })
+      location.reload()
     })
-    location.reload()
-  }))
+  })
+  document.querySelector('#show-answers').addEventListener('click', async () => {
+    window.location = window.location + '?results'
+  })
 })
