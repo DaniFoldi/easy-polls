@@ -35,7 +35,7 @@ addEventListener('load', async () => {
       location.reload()
     })
   })
-  document.querySelector('#show-answers').addEventListener('click', async () => {
+  document.querySelector('#show-results').addEventListener('click', async () => {
     window.location = window.location + '?results'
   })
 })
