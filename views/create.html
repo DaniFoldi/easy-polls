@@ -7,19 +7,89 @@
   <link rel="shortcut icon" href="/poll.png">
   <link rel="apple-touch-icon-precomposed" href="/poll.png">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,600&subset=latin-ext">
-  <link rel="stylesheet" href="/styles.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous" async></script>
+  <style>
+    * {
+      font-family: Raleway;
+      font-weight: 300;
+    }
+
+    body {
+      padding: 0;
+      margin: 0;
+      background: #FBFEF9;
+      display: grid;
+      grid-template-columns: 100vw;
+      grid-template-rows: minmax(54px, 20vh) repeat(50, 54px);
+      grid-row-gap: 1vh;
+      place-items: center;
+    }
+
+    input {
+      font-size: 18px;
+      background: #FBFEF9;
+      height: 48px;
+      border-radius: 4px;
+      border: 3px solid #F39237;
+      padding: 0 8px;
+      width: 500px;
+      color: #191923;
+      box-sizing: border-box;
+    }
+
+    input:nth-child(2) {
+      border: 3px solid #BF1363;
+      font-size: 20px;
+      margin-bottom: 16px;
+    }
+
+    input:focus {
+      outline: none;
+    }
+
+    button {
+      font-size: 20px;
+      background: linear-gradient(to left, #BF1363, #F39237);
+      color: #FBFEF9;
+      font-weight: 600;
+      width: 500px;
+      padding: 4px;
+      height: 48px;
+      border: none;
+      border-radius: 4px;
+      margin-top: 16px;
+    }
+
+    .highlight {
+      color: #F39237;
+      font-weight: 600;
+    }
+
+    @media only screen and (max-width: 530px) {
+      h1 {
+        font-size: 28px;
+        text-align: center;
+        margin: 0 10vw;
+      }
+
+      input {
+        width: 98%;
+      }
+
+      button {
+        width: 98%;
+      }
+    }
+  </style>
   <script src="/create.js" async></script>
 </head>
 
 <body>
-  <form>
-    <input type="text" id="question-field" placeholder="Put your question here">
-    <input type="text" class="answer-field" placeholder="Put an option here">
-    <input type="text" class="answer-field" placeholder="Put an option here">
-    <input type="text" class="answer-field" placeholder="Put an option here">
-    <input type="submit" value="Create poll">
-  </form>
+  <h1>Create an <span class="highlight">easy-poll</span> in seconds</h1>
+  <input type="text" id="question" placeholder="Type your question here">
+  <input type="text" class="answer" placeholder="Choose an option">
+  <input type="text" class="answer" placeholder="Choose an option">
+  <input type="text" class="answer" placeholder="Choose an option">
+  <button>Create poll</button>
 </body>
 
 </html>
