@@ -71,21 +71,37 @@ addEventListener('load', async () => {
   if (body.error)
     return alert('An error has occured')
   window.chart = chart
+  const data = []
+  for (let i = 0; i < body.options.length; i++) {
+    data.push({
+      count: body.answers[i],
+      title: body.options[i]
+    })
+  }
+  data.sort((a, b) => b.count - a.count)
   chart.titleBlock.options.text = body.question
-  chart.config.data.labels = body.options
+  chart.config.data.labels = data.map(el => el.title)
   chart.config.data.datasets[0] = {
     label: '',
-    data: body.answers,
+    data: data.map(el => el.count),
     backgroundColor: '#BF1363'
   }
   chart.update()
 
-  socket.on('poll', async data => {
-    chart.titleBlock.options.text = data.question
-    chart.config.data.labels = data.options
+  socket.on('poll', async body => {
+    const data = []
+    for (let i = 0; i < body.options.length; i++) {
+      data.push({
+        count: body.answers[i],
+        title: body.options[i]
+      })
+    }
+    data.sort((a, b) => b.count - a.count)
+    chart.titleBlock.options.text = body.question
+    chart.config.data.labels = data.map(el => el.title)
     chart.config.data.datasets[0] = {
       label: '',
-      data: data.answers,
+      data: data.map(el => el.count),
       backgroundColor: '#BF1363'
     }
     chart.update()
