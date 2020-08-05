@@ -11,6 +11,7 @@ const path = require('path')
 
 const port = process.env.PORT || 3000
 const pollsfile = process.env.POLLSFILE || 'polls.json5'
+const poll_version = 2
 
 const app = express()
 const server = http.createServer(app)
@@ -26,6 +27,14 @@ try {
   polls = []
 }
 debug(`Loaded ${polls.length} polls`)
+for (let i = polls.length - 1; i >= 0; i--) {
+  const poll = polls[i]
+  if (poll.version !== poll_version) {
+    polls.splice(i, 1)
+    debug('Removing poll due to old format')
+  }
+}
+debug(`${polls.length} polls are available`)
 
 debug('Setting up express middlewares')
 app.disable('x-powered-by')
@@ -51,7 +60,7 @@ async function generateId() {
   return id
 }
 
-async function zeroArray(length) {
+function zeroArray(length) {
   const a = []
   for (let i = 0; i < length; i++)
     a.push(0)
@@ -73,7 +82,7 @@ app.post('/poll', async (req, res, next) => {
   if (options.length === 0)
     return res.json({
       error: true,
-      errorMessage: 'You must choose at least one answer'
+      errorMessage: 'You must provide at least one answer'
     })
   if (!req.body.question || req.body.question.length === 0)
     return res.json({
@@ -85,8 +94,9 @@ app.post('/poll', async (req, res, next) => {
     id: id,
     question: req.body.question,
     options: options,
-    answers: await zeroArray(options.length),
-    multiple: !!req.body.multiple
+    answers: zeroArray(options.length),
+    multiple: !!req.body.multiple,
+    version: poll_version
   })
   res.cookie(id, 1, {
     maxAge: 315576000000
