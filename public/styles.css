@@ -56,3 +56,15 @@ button {
   background: #0E79B2;
   color: #FBFEF9;
 }
+
+#results-container {
+  display: grid;
+  place-items: center;
+  grid-auto-columns: 100vw;
+  grid-auto-rows: 100vh;
+}
+
+#results-container>div {
+  width: 100%;
+  max-width: 800px;
+}

@@ -8,12 +8,17 @@ addEventListener('load', async () => {
       },
       body: JSON.stringify({
         question: document.querySelector('#question').value,
-        options: Array.from(document.querySelectorAll('.answer')).map(el => el.value).filter(el => el !== '')
+        options: Array.from(document.querySelectorAll('.answer')).map(el => el.value).filter(el => el !== ''),
+        multiple: document.querySelector('#multiple').value
       })
     })
     const body = await response.json()
     if (body.error) {
-      alert('An error occured, please try again.')
+      if (body.errorMessage) {
+        alert(body.errorMessage)
+      } else {
+        alert('An error has occured, please try again.')
+      }
     } else {
       const button = document.querySelector('button')
       const element = document.createElement('input')
@@ -32,7 +37,7 @@ addEventListener('load', async () => {
       const clone = document.querySelector('.answer').cloneNode()
       clone.value = ''
       clone.addEventListener('input', addNew)
-      document.querySelector('button').insertAdjacentElement('beforebegin', clone)
+      document.querySelector('label').insertAdjacentElement('beforebegin', clone)
     }
   }
   document.querySelectorAll('.answer').forEach(el => el.addEventListener('input', addNew))

@@ -7,13 +7,68 @@
   <link rel="shortcut icon" href="/poll.png">
   <link rel="apple-touch-icon" href="/poll.png">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,600&subset=latin-ext">
-  <link rel="stylesheet" href="/styles.css">
+  <style>
+    * {
+      font-family: Raleway;
+      font-weight: 300;
+    }
+
+    body {
+      padding: 0;
+      margin: 0;
+      background: #FBFEF9;
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 10vh;
+    }
+
+    p {
+      text-align: center;
+      font-style: italic;
+    }
+
+    button {
+      font-size: 18px;
+      height: 48px;
+      border-radius: 4px;
+      padding: 0 8px;
+      width: 500px;
+      margin: 10px calc(50vw - 250px);
+      cursor: pointer;
+    }
+
+    .answer {
+      background: #FBFEF9;
+      border: 3px solid #F39237;
+      color: #191923;
+      box-sizing: border-box;
+    }
+
+    .selected {
+      border: none;
+      background: #F39237;
+      color: #FBFEF9;
+    }
+
+    #show-results,
+    #submit {
+      height: 40px;
+      border: none;
+      padding: 2px;
+      background: #BF1363;
+      color: #FBFEF9;
+    }
+
+  </style>
   <script src="/answer.js" async></script>
 </head>
 
 <body>
   <h1 id="question">Loading poll...</h1>
   <button class="answer"></button>
+  <button id="submit">Submit</button>
   <button id="show-results">Show results</button>
 </body>
 

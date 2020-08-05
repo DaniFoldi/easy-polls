@@ -1,6 +1,6 @@
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
-const debug = require('debug')('easy-polls')
+const debug = require('debug')('easy-polls:server')
 const express = require('express')
 const json5 = require('json5')
 const io = require('socket.io')
@@ -70,16 +70,23 @@ app.get('/', (req, res, next) => {
 app.post('/poll', async (req, res, next) => {
   debug('Registering new poll data', req.body)
   const options = req.body.options.filter(el => el !== '')
-  if (options.length === 0 || req.body.question.length === 0)
+  if (options.length === 0)
     return res.json({
-      error: true
+      error: true,
+      errorMessage: 'You must choose at least one answer'
+    })
+  if (!req.body.question || req.body.question.length === 0)
+    return res.json({
+      error: true,
+      errorMessage: 'Question field cannot be empty'
     })
   const id = await generateId()
   polls.push({
     id: id,
     question: req.body.question,
     options: options,
-    answers: await zeroArray(options.length)
+    answers: await zeroArray(options.length),
+    multiple: !!req.body.multiple
   })
   res.cookie(id, 1, {
     maxAge: 315576000000
@@ -90,21 +97,48 @@ app.post('/poll', async (req, res, next) => {
 })
 
 app.post('/answer', async (req, res, next) => {
-  if (req.cookies[req.body.id] === 1 || req.cookies[req.body.id] === 0)
+  if (req.cookies[req.body.id] === 1)
     return res.json({
-      error: true
+      error: true,
+      errorMessage: 'You have already answered this poll'
+    })
+  if (req.cookies[req.body.id] === 0)
+    return res.json({
+      error: true,
+      errorMessage: 'You can not answer your own poll'
+    })
+  if (req.body.answers.length === 0)
+    return res.json({
+      error: true,
+      errorMessage: 'You need to select an option'
     })
   const poll = polls.find(el => el.id === req.body.id)
-  if (typeof poll.answers[req.body.answer] === 'undefined')
+  if (typeof poll === 'undefined')
     return res.json({
-      error: true
+      error: true,
+      errorMessage: 'This poll doesn\'t exist'
     })
-  debug(`Registering answer ${poll.options[req.body.answer]} on question ${poll.id} ${poll.question}`)
-  poll.answers[req.body.answer]++
+  if (!poll.multiple && req.body.answers.length > 1)
+    return res.json({
+      error: true,
+      errorMessage: 'You can only select 1 option'
+    })
+  for (let answer of req.body.answers) {
+    if (typeof poll.answers[answer] === 'undefined')
+      return res.json({
+        error: true,
+        errorMessage: 'Invalid option selected'
+      })
+  }
+  debug(`Registering answers ${req.body.answers} on question ${poll.id} ${poll.question}`)
+  for (let answer of req.body.answers) {
+    poll.answers[answer]++
+  }
+  console.log(poll)
   res.cookie(req.body.id, 0, {
     maxAge: 315576000000
   }).json({})
-  socket.in(req.body.id).emit('poll', poll)
+  socket.in(req.body.id).emit('updatePoll', poll)
 })
 
 app.get('/poll/:id', async (req, res, next) => {
@@ -119,7 +153,8 @@ app.post('/poll/:id/details', async (req, res, next) => {
   const poll = polls.find(el => el.id === req.params.id)
   if (typeof poll === 'undefined')
     return res.json({
-      error: true
+      error: true,
+      errorMessage: 'This poll doesn\'t exist'
     })
   debug(`Sending poll ${poll.id} data`, poll)
   res.json(poll)

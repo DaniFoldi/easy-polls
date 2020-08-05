@@ -16,7 +16,7 @@ addEventListener('load', async () => {
           borderWidth: 0
         }
       },
-      responsive: true,
+      //responsive: true,
       legend: {
         display: false
       },
@@ -84,11 +84,11 @@ addEventListener('load', async () => {
   chart.config.data.datasets[0] = {
     label: '',
     data: data.map(el => el.count),
-    backgroundColor: '#BF1363'
+    backgroundColor: '#0E79B2'
   }
   chart.update()
 
-  socket.on('poll', async body => {
+  socket.on('updatePoll', async body => {
     const data = []
     for (let i = 0; i < body.options.length; i++) {
       data.push({
@@ -102,7 +102,7 @@ addEventListener('load', async () => {
     chart.config.data.datasets[0] = {
       label: '',
       data: data.map(el => el.count),
-      backgroundColor: '#BF1363'
+      backgroundColor: '#0E79B2'
     }
     chart.update()
   })
